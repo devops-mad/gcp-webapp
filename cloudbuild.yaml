@@ -1,0 +1,38 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - '-t'
+      - >-
+        ${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/${_IMAGE_NAME}:${_TAG}
+      - .
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - >-
+        ${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/${_IMAGE_NAME}:${_TAG}
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    args:
+      - run
+      - deploy
+      - '${_SERVICE_NAME}'
+      - '--image'
+      - >-
+        ${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/${_IMAGE_NAME}:${_TAG}
+      - '--region'
+      - '${_REGION}'
+      - '--platform'
+      - managed
+      - '--allow-unauthenticated'
+      - '--cpu=1'
+      - '--memory=2Gi'
+      - '--port=5000'
+    entrypoint: gcloud
+substitutions:
+  _SERVICE_NAME: mk-test-service
+  _PROJECT_ID: secure-petal-453506-r1
+  _REGION: us-central1
+  _REPO_NAME: mk-test
+  _IMAGE_NAME: testtask
+  _TAG: latest
+
