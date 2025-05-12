@@ -36,3 +36,6 @@ substitutions:
   _IMAGE_NAME: testtask
   _TAG: latest
 
+  options:
+  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
+
